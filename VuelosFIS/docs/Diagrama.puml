@@ -1,0 +1,82 @@
+@startuml
+title Sistema de Venta de Pasajes Aéreos - VuelosFIS
+
+package modelo {
+
+  class Cliente {
+    -cedula : String
+    -nombre : String
+    -email  : String
+  }
+
+  class Avion {
+    -codigo : String
+    -modelo : String
+    -capacidad : int
+  }
+
+  class Ruta {
+    -origen : String
+    -destino : String
+    -duracion : double
+  }
+
+  class Vuelo {
+    -codigo : String
+    -precio : double
+  }
+
+  class Reserva {
+    -asiento : int
+  }
+
+  class VueloDAO {
+    +listarVuelos() : List<Vuelo>
+  }
+
+  class ClienteDAO {
+    +guardarCliente(cliente : Cliente)
+  }
+
+  class ReservaDAO {
+    +crearReserva(reserva : Reserva)
+  }
+}
+
+package controlador {
+
+  class ControladorVuelo {
+    +obtenerVuelos() : List<Vuelo>
+  }
+
+  class ControladorReserva {
+    +reservarVuelo()
+  }
+}
+
+package vista {
+
+  class VistaVuelo
+  class VistaReserva
+}
+
+' Relaciones del modelo
+Cliente "1" -- "0..*" Reserva
+Vuelo "1" -- "0..*" Reserva
+Vuelo --> Ruta
+Vuelo --> Avion
+
+' DAO
+VueloDAO --> Vuelo
+ClienteDAO --> Cliente
+ReservaDAO --> Reserva
+
+' MVC
+VistaVuelo --> ControladorVuelo
+VistaReserva --> ControladorReserva
+
+ControladorVuelo --> VueloDAO
+ControladorReserva --> ReservaDAO
+
+@enduml
+
