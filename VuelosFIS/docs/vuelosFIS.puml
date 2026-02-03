@@ -1,0 +1,287 @@
+@startuml
+header Sistema de Gestión de Vuelos
+title Vuelos FIS
+
+'Interfaces y Abstracciones
+
+interface "IPaymentStrategy" as IPaymentStrategy {
+    + procesarPago(monto: double): boolean
+}
+
+interface "INotificationService" as INotificationService {
+    + notificar(mensaje: String, destinatario: String): void
+}
+
+'Principio de Sustitución de Liskov y Principio Open-Closed
+abstract class "ServicioAdicional" as ServicioAdicional {
+    # costo: double
+    # descripcion: String
+    + {abstract} calcularCosto(): double
+    + getDescripcion(): String
+}
+
+abstract class "Tripulacion" as Tripulacion {
+    - idEmpleado: String
+    - nombre: String
+    - fechaContratacion: Date
+    + Tripulacion(id: String, nombre: String)
+    + {abstract} trabajar(): void
+}
+
+'Enumeraciones
+
+enum EstadoReserva {
+    PENDIENTE
+    CONFIRMADA
+    CANCELADA
+    PAGADA
+    REEMBOLSADA
+}
+
+enum ClaseAsiento {
+    ECONOMICA
+    EJECUTIVA
+    PRIMERA_CLASE
+}
+
+enum EstadoVuelo {
+    PROGRAMADO
+    DEMORADO
+    ABORDANDO
+    EN_AIRE
+    ATERRIZADO
+    CANCELADO
+}
+
+'Clases Principales
+
+class "Cliente" as Cliente {
+    - idCliente: String
+    - nombre: String
+    - email: String
+    - telefono: String
+    - direccion: String
+    - cuentaLifeMiles: LifeMiles
+    + Cliente(id: String, nombre: String, email: String)
+    + realizarReserva(itinerario: Itinerario, pasajeros: List<Pasajero>): Reserva
+    + consultarSaldoMillas(): int
+    - validarDatos(): boolean
+}
+
+class "Pasajero" as Pasajero {
+    - pasaporte: String
+    - nroDocumento: String
+    - nombre: String
+    - fechaNacimiento: Date
+    - nacionalidad: String
+    - necesidadesEspeciales: String
+    + Pasajero(nombre: String, pasaporte: String)
+    + esMenorDeEdad(): boolean
+}
+
+class "LifeMiles" as LifeMiles {
+    - numeroCuenta: String
+    - saldoMillas: int
+    - nivelStatus: String
+    - fechaVencimiento: Date
+    + LifeMiles(numeroCuenta: String)
+    + acumularMillas(cantidad: int): void
+    + redimirMillas(cantidad: int): boolean
+    + getSaldo(): int
+    + verificarStatus(): String
+}
+
+class "Reserva" as Reserva {
+    - codigoReserva: String
+    - fechaCreacion: DateTime
+    - estado: EstadoReserva
+    - cliente: Cliente
+    - pasajes: List<Pasaje>
+    - total: double
+    - notificador: INotificationService
+    + Reserva(cliente: Cliente)
+    + agregarPasaje(pasaje: Pasaje): void
+    + confirmarReserva(metodoPago: IPaymentStrategy): boolean
+    + cancelar(): void
+    + getResumen(): String
+}
+
+class "Pago" as Pago {
+    - idPago: String
+    - monto: double
+    - fecha: DateTime
+    - estado: String
+    - estrategia: IPaymentStrategy
+    + Pago(monto: double, estrategia: IPaymentStrategy)
+    + ejecutar(): boolean
+    + generarRecibo(): String
+}
+
+class "Pasaje" as Pasaje {
+    - numeroTicket: String
+    - codigoQR: String
+    - pasajero: Pasajero
+    - vuelo: Vuelo
+    - asiento: Asiento
+    - serviciosAdicionales: List<ServicioAdicional>
+    - precioBase: double
+    - emitido: boolean
+    + Pasaje(pasajero: Pasajero, vuelo: Vuelo)
+    + seleccionarAsiento(asiento: Asiento): void
+    + agregarServicio(servicio: ServicioAdicional): void
+    + calcularPrecioTotal(): double
+    + generarBoardingPass(): String
+}
+
+class "Vuelo" as Vuelo {
+    - numeroVuelo: String
+    - fechaSalida: DateTime
+    - fechaLlegada: DateTime
+    - origen: Aeropuerto
+    - destino: Aeropuerto
+    - avion: Avion
+    - estado: EstadoVuelo
+    - tripulacion: List<Tripulacion>
+    + Vuelo(numero: String, origen: Aeropuerto, destino: Aeropuerto)
+    + getDuracionEstimada(): TimeSpan
+    + asignarTripulacion(miembro: Tripulacion): void
+    + actualizarEstado(nuevoEstado: EstadoVuelo): void
+    + estaLleno(): boolean
+}
+
+class "Itinerario" as Itinerario {
+    - codigoItinerario: String
+    - vuelos: List<Vuelo>
+    - fechaGeneracion: Date
+    + agg Vuelo(vuelo: Vuelo): void
+    + getEscalas(): int
+    + getDuracionTotal(): TimeSpan
+    + esValido(): boolean
+}
+
+class "Avión" as Avion {
+    - matricula: String
+    - modelo: String
+    - fabricante: String
+    - anioFabricacion: int
+    - capacidadTotal: int
+    - asientos: List<Asiento>
+    + Avion(matricula: String, modelo: String)
+    + getAsientosDisponibles(): List<Asiento>
+    + realizarMantenimiento(): void
+}
+
+class "Aeropuerto" as Aeropuerto {
+    - codigoIATA: String
+    - nombre: String
+    - ciudad: String
+    - pais: String
+    - latitud: double
+    - longitud: double
+    + Aeropuerto(codigo: String, nombre: String)
+    + getUbicacion(): String
+}
+
+class "Asiento" as Asiento {
+    - codigo: String
+    - fila: int
+    - letra: char
+    - clase: ClaseAsiento
+    - ubicacion: String 
+    - disponible: boolean
+    + Asiento(codigo: String, clase: ClaseAsiento)
+    + reservar(): void
+    + liberar(): void
+    + esVentana(): boolean
+}
+
+' Implementaciones de Estrategias y Herencias
+
+class "EquipajeAdicional" as EquipajeAdicional {
+    - pesoKg: double
+    - dimensiones: String
+    + calcularCosto(): double
+}
+
+class "ComidaPremium" as ComidaPremium {
+    - menu: String
+    - esVegetariano: boolean
+    + calcularCosto(): double
+}
+
+class "Piloto" as Piloto {
+    - nroLicencia: String
+    - horasVueloAcumuladas: int
+    - rango: String
+    + trabajar(): void
+    + planificarRuta(): void
+    + reportarIncidente(): void
+}
+
+class "TripulanteCabina" as TripulanteCabina {
+    - idiomas: List<String>
+    - certificaciones: List<String>
+    + trabajar(): void
+    + servirAlimentos(): void
+    + realizarDemostracionSeguridad(): void
+}
+
+class "PagoTarjetaCredito" as PagoTarjetaCredito {
+    - numeroTarjeta: String
+    - nombreTitular: String
+    - fechaExpiracion: String
+    - cvv: String
+    + procesarPago(monto: double): boolean
+    - validarTarjeta(): boolean
+}
+
+class "PagoPayPal" as PagoPayPal {
+    - emailCuenta: String
+    - tokenSeguridad: String
+    + procesarPago(monto: double): boolean
+}
+
+class "PagoConMillas" as PagoLifeMiles {
+    - cuenta: LifeMiles
+    - factorConversion: double
+    + procesarPago(monto: double): boolean
+}
+
+' Relaciones
+
+' Herencia
+Tripulacion <|-- Piloto
+Tripulacion <|-- TripulanteCabina
+ServicioAdicional <|-- EquipajeAdicional
+ServicioAdicional <|-- ComidaPremium
+IPaymentStrategy <|.. PagoTarjetaCredito
+IPaymentStrategy <|.. PagoPayPal
+IPaymentStrategy <|.. PagoLifeMiles
+
+' Asociaciones Principales
+Cliente "1" --> "0..1" LifeMiles : posee >
+Cliente "1" --> "0..*" Reserva : realiza >
+
+Reserva "1" *-- "1..*" Pasaje : contiene >
+Reserva "1" --> "1" Pago : genera >
+Reserva ..> IPaymentStrategy : depende de >
+
+Pago --> IPaymentStrategy : usa >
+
+Pasaje "0..*" --> "1" Pasajero : emitido a >
+Pasaje "0..*" --> "1" Vuelo : válido para >
+Pasaje "0..*" --> "1" Asiento : reserva >
+Pasaje "1" o-- "0..*" ServicioAdicional : incluye >
+
+Vuelo "0..*" --> "1" Avion : operado por >
+Vuelo "0..*" --> "1" Aeropuerto : origen >
+Vuelo "0..*" --> "1" Aeropuerto : destino >
+Vuelo "1" o-- "1..*" Tripulacion : tripulado por >
+
+Avion "1" *-- "1..*" Asiento : compuesto por >
+
+Itinerario "1" o-- "1..*" Vuelo : tiene >
+
+Cliente ..> Itinerario : busca/selecciona >
+
+@enduml
