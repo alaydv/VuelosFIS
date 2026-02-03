@@ -29,8 +29,6 @@ public class Itinerario {
         for (Vuelo v : vuelos) {
             total = total.plus(v.getDuracionEstimada());
         }
-        // Note: Logic for layover time is omitted for simplicity as it requires more
-        // complex calculation
         return total;
     }
 

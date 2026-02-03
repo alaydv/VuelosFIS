@@ -1,5 +1,7 @@
 package com.vuelosfis.model;
 
+import com.vuelosfis.exception.SaldoInsuficienteException;
+
 public class PagoPayPal implements IPaymentStrategy {
     private String emailCuenta;
     private String tokenSeguridad;
@@ -10,7 +12,7 @@ public class PagoPayPal implements IPaymentStrategy {
     }
 
     @Override
-    public boolean procesarPago(double monto) {
+    public boolean procesarPago(double monto) throws SaldoInsuficienteException {
         System.out.println("Procesando pago de $" + monto + " con PayPal (" + emailCuenta + ")");
         return true;
     }

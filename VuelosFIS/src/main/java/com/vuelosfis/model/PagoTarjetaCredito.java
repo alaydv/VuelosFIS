@@ -1,5 +1,7 @@
 package com.vuelosfis.model;
 
+import com.vuelosfis.exception.SaldoInsuficienteException;
+
 public class PagoTarjetaCredito implements IPaymentStrategy {
     private String numeroTarjeta;
     private String nombreTitular;
@@ -14,16 +16,15 @@ public class PagoTarjetaCredito implements IPaymentStrategy {
     }
 
     @Override
-    public boolean procesarPago(double monto) {
+    public boolean procesarPago(double monto) throws SaldoInsuficienteException {
         if (validarTarjeta()) {
             System.out.println("Procesando pago de $" + monto + " con Tarjeta de Crédito " + numeroTarjeta);
             return true;
         }
-        return false;
+        throw new SaldoInsuficienteException("Tarjeta inválida o rechazada.");
     }
 
     private boolean validarTarjeta() {
-        // Validación básica (simulada)
         return numeroTarjeta != null && numeroTarjeta.length() >= 13;
     }
 }

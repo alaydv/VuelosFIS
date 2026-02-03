@@ -1,14 +1,16 @@
 package com.vuelosfis.controller;
 
+import com.vuelosfis.exception.*;
 import com.vuelosfis.model.*;
 import com.vuelosfis.util.DataLoader;
 import com.vuelosfis.view.ConsoleView;
 import java.util.List;
+import java.util.Map;
 
 public class SistemaController {
     private List<Vuelo> vuelos;
-    private List<Aeropuerto> aeropuertos;
-    private List<Avion> aviones;
+    private Map<String, Aeropuerto> aeropuertos;
+    private Map<String, Avion> aviones;
     private List<Cliente> clientes;
     private ConsoleView view;
     private DataLoader dataLoader;
@@ -20,21 +22,17 @@ public class SistemaController {
     }
 
     private void cargarDatos() {
-        // En un caso real, estas rutas serían relativas al classpath o configurables
-        // Usamos rutas relativas asumiendo ejecución desde la raíz del proyecto
-        // Ojo: en ejecución normal de Java, src/main/resources se empaqueta en el
-        // classpath.
-        // Para este ejercicio simple, intentaremos leer desde el path relativo source
-        // si falla classpath.
+        try {
+            String pathPrefix = "src/main/resources/";
+            aeropuertos = dataLoader.cargarAeropuertosMap(pathPrefix + "aeropuertos.txt");
+            aviones = dataLoader.cargarAvionesMap(pathPrefix + "aviones.txt");
+            clientes = dataLoader.cargarClientes(pathPrefix + "clientes.txt");
+            vuelos = dataLoader.cargarVuelos(pathPrefix + "vuelos.txt", aeropuertos, aviones);
 
-        String pathPrefix = "src/main/resources/";
-
-        aeropuertos = dataLoader.cargarAeropuertos(pathPrefix + "aeropuertos.txt");
-        aviones = dataLoader.cargarAviones(pathPrefix + "aviones.txt");
-        clientes = dataLoader.cargarClientes(pathPrefix + "clientes.txt");
-        vuelos = dataLoader.cargarVuelos(pathPrefix + "vuelos.txt", aeropuertos, aviones);
-
-        view.mostrarMensaje("Datos cargados correctamente: " + vuelos.size() + " vuelos.");
+            view.mostrarMensaje("Datos cargados correctamente: " + vuelos.size() + " vuelos.");
+        } catch (CargaDatosException e) {
+            view.mostrarError("Error crítico al cargar datos: " + e.getMessage());
+        }
     }
 
     public void iniciar() {
@@ -54,7 +52,7 @@ public class SistemaController {
                     view.mostrarMensaje("Saliendo del sistema...");
                     break;
                 default:
-                    view.mostrarMensaje("Opción inválida.");
+                    view.mostrarError("Opción inválida, intente de nuevo.");
             }
         }
     }
@@ -65,9 +63,12 @@ public class SistemaController {
 
     private void realizarReserva() {
         verVuelos();
+        if (vuelos == null || vuelos.isEmpty())
+            return;
+
         int indice = view.solicitarIndiceVuelo();
         if (indice < 1 || indice > vuelos.size()) {
-            view.mostrarMensaje("Vuelo inválido.");
+            view.mostrarError("Vuelo inválido.");
             return;
         }
         Vuelo vueloSeleccionado = vuelos.get(indice - 1);
@@ -87,32 +88,32 @@ public class SistemaController {
 
         Pasaje pasaje = new Pasaje(pasajero, vueloSeleccionado);
 
-        // Asignar un asiento cualquiera disponible (simplificado)
-        // En una app real, mostraríamos mapa de asientos
-        List<Asiento> asientosDisp = vueloSeleccionado.estaLleno() ? null : null; // TODO: Fix estaLleno logic locally
-                                                                                  // inside Vuelo to return list
-        // Accediendo al avion del vuelo (que es privado, así que asumimos asignación
-        // automática por ahora o fix visibility)
-        // Por ahora, creamos un asiento dummy para completar el flujo
-        Asiento asiento = new Asiento("99F", ClaseAsiento.ECONOMICA);
-        pasaje.seleccionarAsiento(asiento);
+        try {
+            Asiento asiento = new Asiento("99F", ClaseAsiento.ECONOMICA);
+            pasaje.seleccionarAsiento(asiento);
+            reserva.agregarPasaje(pasaje);
 
-        reserva.agregarPasaje(pasaje);
+            view.mostrarMensaje("Reserva creada. Total a pagar: " + pasaje.calcularPrecioTotal());
 
-        view.mostrarMensaje("Reserva creada. Total: " + pasaje.calcularPrecioTotal());
+            IPaymentStrategy pago = new PagoTarjetaCredito("1234567890123456", cliente.getNombre(), "12/25", "123");
 
-        // Simular Pago
-        IPaymentStrategy pago = new PagoTarjetaCredito("1234567890123456", cliente.getNombre(), "12/25", "123");
-        if (reserva.confirmarReserva(pago)) {
+            reserva.confirmarReserva(pago);
+
             view.mostrarMensaje("Reserva CONFIRMADA y PAGADA.");
             view.mostrarMensaje(reserva.getResumen());
             view.mostrarMensaje(pasaje.generarBoardingPass());
-        } else {
-            view.mostrarMensaje("Error en el pago.");
+
+        } catch (SaldoInsuficienteException e) {
+            view.mostrarError("La reserva no pudo ser pagada: " + e.getMessage());
+            reserva.cancelar();
+        } catch (Exception e) {
+            view.mostrarError("Error inesperado al procesar la reserva: " + e.getMessage());
         }
     }
 
     private Cliente buscarCliente(String id) {
+        if (clientes == null)
+            return null;
         for (Cliente c : clientes) {
             if (c.getIdCliente().equals(id))
                 return c;

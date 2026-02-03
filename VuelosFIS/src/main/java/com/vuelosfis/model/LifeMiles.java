@@ -1,5 +1,6 @@
 package com.vuelosfis.model;
 
+import com.vuelosfis.exception.SaldoInsuficienteException;
 import java.util.Date;
 
 public class LifeMiles {
@@ -16,15 +17,18 @@ public class LifeMiles {
     }
 
     public void acumularMillas(int cantidad) {
-        this.saldoMillas += cantidad;
+        if (cantidad > 0) {
+            this.saldoMillas += cantidad;
+        }
     }
 
-    public boolean redimirMillas(int cantidad) {
+    public void redimirMillas(int cantidad) throws SaldoInsuficienteException {
         if (this.saldoMillas >= cantidad) {
             this.saldoMillas -= cantidad;
-            return true;
+        } else {
+            throw new SaldoInsuficienteException(
+                    "Saldo de millas insuficiente. Requerido: " + cantidad + ", Disponible: " + this.saldoMillas);
         }
-        return false;
     }
 
     public int getSaldo() {

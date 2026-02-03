@@ -49,8 +49,6 @@ public class Vuelo {
     public boolean estaLleno() {
         if (avion == null)
             return false;
-        // Simplified Logic: assuming we track passengers somewhere else or check
-        // available seats
         return avion.getAsientosDisponibles().isEmpty();
     }
 

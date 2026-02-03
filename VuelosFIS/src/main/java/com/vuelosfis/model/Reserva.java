@@ -1,5 +1,6 @@
 package com.vuelosfis.model;
 
+import com.vuelosfis.exception.SaldoInsuficienteException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ public class Reserva {
         this.total += pasaje.calcularPrecioTotal();
     }
 
-    public boolean confirmarReserva(IPaymentStrategy metodoPago) {
+    public void confirmarReserva(IPaymentStrategy metodoPago) throws SaldoInsuficienteException {
         Pago nuevoPago = new Pago(this.total, metodoPago);
         if (nuevoPago.ejecutar()) {
             this.pago = nuevoPago;
@@ -38,9 +39,7 @@ public class Reserva {
             if (notificador != null) {
                 notificador.notificar("Reserva Confirmada " + codigoReserva, cliente.getEmail());
             }
-            return true;
         }
-        return false;
     }
 
     public void setNotificador(INotificationService notificador) {

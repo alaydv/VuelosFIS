@@ -17,7 +17,7 @@ public class Pasaje {
         this.pasajero = pasajero;
         this.vuelo = vuelo;
         this.serviciosAdicionales = new ArrayList<>();
-        this.precioBase = 100.0; // Default base price
+        this.precioBase = 100.0;
         this.emitido = false;
         this.numeroTicket = "TKT-" + System.currentTimeMillis();
     }

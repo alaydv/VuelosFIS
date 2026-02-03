@@ -1,8 +1,10 @@
 package com.vuelosfis.model;
 
+import com.vuelosfis.exception.SaldoInsuficienteException;
+
 public class PagoLifeMiles implements IPaymentStrategy {
     private LifeMiles cuenta;
-    private double factorConversion; // Ejemplo: 100 millas = 1 USD -> factor = 0.01
+    private double factorConversion;
 
     public PagoLifeMiles(LifeMiles cuenta, double factorConversion) {
         this.cuenta = cuenta;
@@ -10,16 +12,15 @@ public class PagoLifeMiles implements IPaymentStrategy {
     }
 
     @Override
-    public boolean procesarPago(double monto) {
+    public boolean procesarPago(double monto) throws SaldoInsuficienteException {
         int millasRequeridas = (int) (monto / factorConversion);
-        if (cuenta.getSaldo() >= millasRequeridas) {
+        try {
             cuenta.redimirMillas(millasRequeridas);
             System.out.println("Procesando pago de $" + monto + " con " + millasRequeridas + " millas.");
             return true;
-        } else {
-            System.out.println("Fondos insuficientes en LifeMiles. Requerido: " + millasRequeridas + ", Disponible: "
-                    + cuenta.getSaldo());
-            return false;
+        } catch (SaldoInsuficienteException e) {
+            System.out.println("Error en pago con millas: " + e.getMessage());
+            throw e;
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.vuelosfis.model;
 
+import com.vuelosfis.exception.SaldoInsuficienteException;
 import java.time.LocalDateTime;
 
 public class Pago {
@@ -17,14 +18,19 @@ public class Pago {
         this.estado = "PENDIENTE";
     }
 
-    public boolean ejecutar() {
-        boolean resultado = estrategia.procesarPago(monto);
-        if (resultado) {
-            this.estado = "APROBADO";
-        } else {
+    public boolean ejecutar() throws SaldoInsuficienteException {
+        try {
+            boolean resultado = estrategia.procesarPago(monto);
+            if (resultado) {
+                this.estado = "APROBADO";
+                return true;
+            }
+        } catch (SaldoInsuficienteException e) {
             this.estado = "RECHAZADO";
+            throw e;
         }
-        return resultado;
+        this.estado = "RECHAZADO";
+        return false;
     }
 
     public String generarRecibo() {
