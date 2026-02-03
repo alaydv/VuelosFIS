@@ -1,0 +1,3 @@
+HK-1234,Boeing 787,250
+N-5678,Airbus A320,180
+EC-9012,Boeing 747,400

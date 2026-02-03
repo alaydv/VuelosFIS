@@ -1,0 +1,5 @@
+BOG,El Dorado,Bogota,Colombia,4.701, -74.146
+MIA,Miami Intl,Miami,USA,25.793, -80.290
+MAD,Adolfo Suarez,Madrid,Spain,40.471, -3.562
+JFK,John F Kennedy,New York,USA,40.641, -73.778
+MEX,Benito Juarez,Mexico City,Mexico,19.435, -99.082
