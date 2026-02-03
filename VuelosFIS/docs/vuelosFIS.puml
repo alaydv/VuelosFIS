@@ -195,7 +195,7 @@ class "Asiento" as Asiento {
     + esVentana(): boolean
 }
 
-' Implementaciones de Estrategias y Herencias
+' Implementaciones y Herencias
 
 class "EquipajeAdicional" as EquipajeAdicional {
     - pesoKg: double
