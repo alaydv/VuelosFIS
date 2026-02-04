@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.vuelosfis.view.javafx.InvoiceController"
+      spacing="15" alignment="CENTER" styleClass="card">
+
+    <Label text="Factura de Reserva" styleClass="header-label"/>
+
+    <GridPane hgap="10" vgap="10">
+    <Label text="Pasajero:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+    <Label fx:id="pasajeroLabel" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+    <Label text="Documento:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+    <Label fx:id="documentoLabel" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+    <Label text="Vuelo:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+    <Label fx:id="vueloLabel" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+    <Label text="Ruta:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+    <Label fx:id="rutaLabel" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+    <Label text="Fecha de vuelo:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+    <Label fx:id="fechaVueloLabel" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+    <Label text="Asiento:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+    <Label fx:id="asientoLabel" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+    <Label text="Método de pago:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+    <Label fx:id="metodoPagoLabel" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+    <Label text="Total:" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+    <Label fx:id="totalLabel" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+
+    <Label text="Fecha de emisión:" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
+    <Label fx:id="fechaEmisionLabel" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <Label text="Servicios adicionales:"/>
+    <TextArea fx:id="serviciosTextArea" editable="false" wrapText="true" prefRowCount="5"/>
+
+    <Button text="Finalizar" fx:id="finalizarButton" styleClass="button"/>
+</VBox>
