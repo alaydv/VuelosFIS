@@ -22,6 +22,10 @@ public class BookingController {
     @FXML
     private TextField clientIdField;
     @FXML
+    private Label lifeMilesLabel;
+    @FXML
+    private Label lifeMilesMessageLabel;
+    @FXML
     private TextField paxNameField;
     @FXML
     private TextField paxPassportField;
@@ -89,7 +93,56 @@ public class BookingController {
         // Listeners for toggle
         paymentGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) -> updatePaymentVisibility());
         updatePaymentVisibility(); // init state
+        
+        // Estado inicial de LifeMiles
+        lifeMilesLabel.setText("LifeMiles: ---");
+        lifeMilesMessageLabel.setText("");
+        payLifeMiles.setDisable(true);
     }
+    
+    @FXML
+    private void onClientIdChanged() {
+
+    String clientId = clientIdField.getText().trim();
+
+    // Reset UI si está vacío
+        if (clientId.isEmpty()) {
+            lifeMilesLabel.setText("LifeMiles: ---");
+            lifeMilesMessageLabel.setText("");
+            payLifeMiles.setDisable(true);
+        return;
+        }
+
+    // Buscar cliente
+        Cliente cliente = sistemaController.buscarCliente(clientId);
+
+        if (cliente == null || cliente.getCuentaLifeMiles() == null) {
+            lifeMilesLabel.setText("LifeMiles: 0");
+            lifeMilesMessageLabel.setText("Cliente sin cuenta LifeMiles");
+            lifeMilesMessageLabel.setStyle("-fx-text-fill: red;");
+            payLifeMiles.setDisable(true);
+        return;
+        }
+
+        int millas = cliente.getCuentaLifeMiles().getSaldo();
+
+        lifeMilesLabel.setText("LifeMiles: " + millas);
+
+    // Precio base fijo por ahora (luego lo mejoramos)
+        double precioEstimado = 100;
+
+        if (millas >= precioEstimado) {
+            lifeMilesMessageLabel.setText("✔ Millas suficientes para este vuelo");
+            lifeMilesMessageLabel.setStyle("-fx-text-fill: green;");
+            payLifeMiles.setDisable(false);
+        } else {
+            lifeMilesMessageLabel.setText("✖ Millas insuficientes");
+            lifeMilesMessageLabel.setStyle("-fx-text-fill: red;");
+            payLifeMiles.setDisable(true);
+        }
+}
+
+    
 
     public void setFlight(Vuelo vuelo) {
         this.selectedFlight = vuelo;
@@ -182,7 +235,7 @@ public class BookingController {
             }
 
             // 5. Payment Strategy Logic (Using unused IPaymentStrategy implementations)
-            IPaymentStrategy strategy;
+            IPaymentStrategy strategy = null;
             if (payCard.isSelected()) {
                 if (cardNumberField.getText().isEmpty())
                     throw new IllegalArgumentException("Datos de tarjeta requeridos");
@@ -192,13 +245,25 @@ public class BookingController {
                 if (paypalEmailField.getText().isEmpty())
                     throw new IllegalArgumentException("Email de PayPal requerido");
                 strategy = new PagoPayPal(paypalEmailField.getText(), paypalTokenField.getText());
-            } else { // LifeMiles
-                if (lifemilesAccountField.getText().isEmpty())
-                    throw new IllegalArgumentException("Cuenta LifeMiles requerida");
-                strategy = new PagoLifeMiles(new LifeMiles(lifemilesAccountField.getText(), 50000), 0.01);
+            } else if (payLifeMiles.isSelected()) {
+
+                Cliente clienteLifeMiles = sistemaController.buscarCliente(clientIdField.getText());
+
+                if (clienteLifeMiles == null || clienteLifeMiles.getCuentaLifeMiles() == null) {
+                    throw new IllegalArgumentException("El cliente no tiene cuenta LifeMiles");
+                }
+
+                strategy = new PagoLifeMiles(
+                        clienteLifeMiles.getCuentaLifeMiles(),
+                        0.01 // conversión: 1 milla = $0.01
+                );
             }
+ 
 
             // 6. Execute Payment
+            if (strategy == null) {
+                throw new IllegalStateException("Debe seleccionar un método de pago");
+            }
             sistemaController.pagarReserva(reserva, strategy);
 
             // 7. Use Itinerario Class (Robustness)

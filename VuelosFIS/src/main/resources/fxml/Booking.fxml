@@ -35,13 +35,14 @@
         <Label text="Datos del Pasajero" styleClass="subheader-label" />
         <GridPane hgap="15" vgap="15">
             <Label text="ID Cliente (opcional):" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-            <TextField fx:id="clientIdField" promptText="Ej: 1001" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+            <TextField fx:id="clientIdField" promptText="Ej: 1001" GridPane.columnIndex="1" GridPane.rowIndex="0" onKeyReleased="#onClientIdChanged"/>
+            <Label fx:id="lifeMilesLabel" text="LifeMiles: ---" GridPane.columnIndex="1" GridPane.rowIndex="1" style="-fx-text-fill: #555555;" />
+            <Label fx:id="lifeMilesMessageLabel" text="" GridPane.columnIndex="1" GridPane.rowIndex="2" style="-fx-font-weight: bold;" />
+            <Label text="Nombre Completo:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+            <TextField fx:id="paxNameField" promptText="Nombre del pasajero" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
-            <Label text="Nombre Completo:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-            <TextField fx:id="paxNameField" promptText="Nombre del pasajero" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-
-            <Label text="Pasaporte / ID:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-            <TextField fx:id="paxPassportField" promptText="Número de documento" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <Label text="Pasaporte / ID:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+            <TextField fx:id="paxPassportField" promptText="Número de documento" GridPane.columnIndex="1" GridPane.rowIndex="4" />
         </GridPane>
 
         <Separator />
@@ -62,7 +63,7 @@
                 </toggleGroup>
             </RadioButton>
             <RadioButton fx:id="payPayPal" text="PayPal" toggleGroup="$paymentGroup"/>
-            <RadioButton fx:id="payLifeMiles" text="LifeMiles" toggleGroup="$paymentGroup"/>
+            <RadioButton fx:id="payLifeMiles" text="LifeMiles" toggleGroup="$paymentGroup"  disable="true"/>
         </HBox>
 
         <!-- Container for Card Details -->
@@ -100,7 +101,7 @@
              <Label text="Redención de Millas" style="-fx-font-weight: bold;"/>
              <GridPane hgap="15" vgap="15">
                 <Label text="Número LifeMiles:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                <TextField fx:id="lifemilesAccountField" promptText="LM-12345678" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                <TextField fx:id="lifemilesAccountField" promptText="Detectado automáticamente" disable="true" GridPane.columnIndex="1" GridPane.rowIndex="0" />
              </GridPane>
         </VBox>
 
