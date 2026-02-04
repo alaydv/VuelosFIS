@@ -314,3 +314,39 @@
     -fx-border-color: #bdc3c7;
     -fx-border-width: 0.5;
 }
+.class-label {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-primary-color;
+    -fx-padding: 10 0 5 0;
+}
+
+.seat-primera {
+    -fx-background-color: #8e44ad;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.seat-ejecutiva {
+    -fx-background-color: #27ae60;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.seat-economica {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.seat-selected {
+    -fx-background-color: #e67e22;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.seat-occupied {
+    -fx-background-color: #bdc3c7;
+    -fx-text-fill: black;
+}
+
