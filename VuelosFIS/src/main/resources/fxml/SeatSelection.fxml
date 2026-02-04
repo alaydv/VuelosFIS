@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.vuelosfis.view.javafx.SeatSelectionController"
+      spacing="20" alignment="CENTER" styleClass="card">
+
+    <Label text="Selecciona tu asiento" styleClass="header-label"/>
+
+    <!-- Grid de asientos -->
+    <GridPane fx:id="seatGrid" hgap="10" vgap="10" alignment="CENTER"/>
+
+    <HBox spacing="15" alignment="CENTER">
+        <Button fx:id="confirmarButton" text="Confirmar asiento" styleClass="secondary-button"/>
+        <Button fx:id="continuarButton" text="Continuar a reserva" styleClass="button"/>
+    </HBox>
+
+</VBox>
