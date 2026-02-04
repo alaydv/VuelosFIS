@@ -21,6 +21,10 @@ public class Avion {
         this(matricula, modelo);
         this.capacidadTotal = capacidad;
     }
+    
+    public List<Asiento> getAsientos() {
+    return asientos;
+    }
 
     public List<Asiento> getAsientosDisponibles() {
         List<Asiento> disponibles = new ArrayList<>();
