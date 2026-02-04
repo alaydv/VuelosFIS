@@ -165,7 +165,7 @@ public class BookingController {
     @FXML
     private void handleBack(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/FlightSearch.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SeatSelection.fxml"));
             Parent root = loader.load();
             Scene scene = new Scene(root);
             scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
