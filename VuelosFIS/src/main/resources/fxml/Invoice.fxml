@@ -61,6 +61,6 @@
 
         <Label fx:id="fechaEmisionLabel" style="-fx-font-size: 11; -fx-text-fill: gray;"/>
 
-        <Button text="FINALIZAR Y SALIR" fx:id="finalizarButton" styleClass="button" maxWidth="Infinity"/>
+        <Button text="GUARDAR Y SALIR" fx:id="finalizarButton" styleClass="button" maxWidth="Infinity"/>
     </VBox>
 </StackPane>
