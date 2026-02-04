@@ -102,7 +102,7 @@ public class FlightSearchController implements Initializable {
     private void handleBookFlight(ActionEvent event) {
         Vuelo selected = flightListView.getSelectionModel().getSelectedItem();
         if (selected != null) {
-            navigateToBooking(event, selected);
+            navigateToSeatSelection(event, selected);
         }
     }
 
@@ -120,20 +120,21 @@ public class FlightSearchController implements Initializable {
         }
     }
 
-    private void navigateToBooking(ActionEvent event, Vuelo vuelo) {
+    private void navigateToSeatSelection(ActionEvent event, Vuelo vuelo) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Booking.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/SeatSelection.fxml"));
             Parent root = loader.load();
 
-            // Pass the selected flight to the booking controller
-            BookingController controller = loader.getController();
-            controller.setFlight(vuelo);
+            // Pass the selected flight to the seat selection controller
+            SeatSelectionController controller = loader.getController();
+            controller.setVuelo(vuelo); // método que ya definiste en SeatSelectionController
 
             Scene scene = new Scene(root);
             scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(scene);
             stage.show();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
