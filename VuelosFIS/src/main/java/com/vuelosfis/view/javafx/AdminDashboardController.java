@@ -1,6 +1,7 @@
 package com.vuelosfis.view.javafx;
 
 import com.vuelosfis.model.Reserva;
+import java.io.File;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,6 +17,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
+import javafx.stage.FileChooser;
 
 public class AdminDashboardController implements Initializable {
 
@@ -56,7 +58,6 @@ public class AdminDashboardController implements Initializable {
                 cellData -> new SimpleStringProperty(cellData.getValue().getCliente().getNombre()));
 
         // colFecha removed as requested/replaced by detailed columns
-
         colEstado.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getEstado().toString()));
 
         // 2. Vuelo Info (via First Pasaje)
@@ -77,9 +78,10 @@ public class AdminDashboardController implements Initializable {
 
         colAvion.setCellValueFactory(cellData -> {
             if (!cellData.getValue().getPasajes().isEmpty()) {
-                if (cellData.getValue().getPasajes().get(0).getVuelo().getAvion() != null)
+                if (cellData.getValue().getPasajes().get(0).getVuelo().getAvion() != null) {
                     return new SimpleStringProperty(
                             cellData.getValue().getPasajes().get(0).getVuelo().getAvion().getModelo());
+                }
             }
             return new SimpleStringProperty("-");
         });
@@ -150,5 +152,91 @@ public class AdminDashboardController implements Initializable {
             System.out.println("Reserva: " + r.getResumen());
         }
         System.out.println("-----------------------------");
+    }
+
+    @FXML
+    private void handleUploadCSV(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Importar Reservas");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV Files", "*.csv"));
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        File file = fileChooser.showOpenDialog(stage);
+
+        if (file != null) {
+            procesarCSV(file);
+        }
+    }
+
+    private void procesarCSV(File file) {
+        try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(file))) {
+            String line;
+            boolean isFirstLine = true;
+            int count = 0;
+
+            while ((line = br.readLine()) != null) {
+                if (isFirstLine) {
+                    isFirstLine = false;
+                    continue;
+                }
+
+                try {
+                    String[] data = line.split(",");
+                    if (data.length < 10) {
+                        continue;
+                    }
+
+                    com.vuelosfis.model.Cliente cliente = new com.vuelosfis.model.Cliente(data[0].trim(), data[1].trim(), "cliente@vuelos.com");
+
+                    com.vuelosfis.model.Aeropuerto ori = new com.vuelosfis.model.Aeropuerto("ORI", "Origen");
+                    com.vuelosfis.model.Aeropuerto des = new com.vuelosfis.model.Aeropuerto("DES", "Destino");
+                    com.vuelosfis.model.Avion avion = new com.vuelosfis.model.Avion("MAT-" + data[3], data[5].trim());
+
+                    com.vuelosfis.model.Vuelo vuelo = new com.vuelosfis.model.Vuelo(
+                            data[3].trim(), ori, des,
+                            java.time.LocalDateTime.now(),
+                            java.time.LocalDateTime.now().plusHours(2),
+                            avion
+                    );
+
+                    String claseStr = data[8].trim().toUpperCase().replace("CLASS", "CLASE");
+                    com.vuelosfis.model.ClaseAsiento claseAsiento = com.vuelosfis.model.ClaseAsiento.valueOf(claseStr);
+                    com.vuelosfis.model.Asiento asiento = new com.vuelosfis.model.Asiento(data[7].trim(), claseAsiento);
+
+                    com.vuelosfis.model.Pasajero pasajero = new com.vuelosfis.model.Pasajero(data[1].trim(), "cliente@vuelos.com");
+                    com.vuelosfis.model.Pasaje pasaje = new com.vuelosfis.model.Pasaje(pasajero, vuelo);
+                    pasaje.seleccionarAsiento(asiento);
+
+                    com.vuelosfis.model.Reserva reserva = new com.vuelosfis.model.Reserva(cliente);
+                    reserva.agregarPasaje(pasaje);
+
+                    javafx.application.Platform.runLater(() -> {
+                        reservationTable.getItems().add(reserva);
+                    });
+
+                    count++;
+
+                } catch (Exception e) {
+                    System.err.println("Error en línea [" + line + "]: " + e.getMessage());
+                }
+            }
+
+            int finalCount = count;
+            javafx.application.Platform.runLater(() -> {
+                mostrarAlerta("Éxito", "Se cargaron " + finalCount + " reservas correctamente.");
+            });
+
+        } catch (Exception e) {
+            mostrarAlerta("Error", "Error al leer el archivo: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void mostrarAlerta(String titulo, String mensaje) {
+        javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
     }
 }

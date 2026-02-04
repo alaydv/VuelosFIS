@@ -42,6 +42,8 @@
     </TableView>
 
     <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Importar CSV" onAction="#handleUploadCSV" styleClass="button"/>
+        
         <Button text="Generar Reporte (Consola)" onAction="#handleGenerateReport" styleClass="button"/>
     </HBox>
 
