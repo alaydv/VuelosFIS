@@ -2,6 +2,7 @@ package com.vuelosfis.view.javafx;
 
 import com.vuelosfis.model.Asiento;
 import com.vuelosfis.model.Avion;
+import com.vuelosfis.model.ClaseAsiento;
 import com.vuelosfis.model.Vuelo;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,6 +16,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
+import javafx.scene.control.Label;
 
 public class SeatSelectionController {
 
@@ -40,44 +42,68 @@ public class SeatSelectionController {
         this.avion = avion;
         seatGrid.getChildren().clear();
 
-        int row = 0;
-        int col = 0;
+        int filasPorClase = 5;
+        int columnas = 4;
+        char[] letras = {'A', 'B', 'C', 'D'};
 
-        // Recorremos todos los asientos del avión
-        for (Asiento a : avion.getAsientos()) {
-            // El texto del botón será el código del asiento (ej: 1A, 1B...)
-            Button seatBtn = new Button(a.getCodigo());
-            seatBtn.setPrefSize(50, 50);
+        ClaseAsiento[] clases = {
+            ClaseAsiento.PRIMERA_CLASE,
+            ClaseAsiento.EJECUTIVA,
+            ClaseAsiento.ECONOMICA
+        };
 
-            if (a.isDisponible()) {
-                seatBtn.getStyleClass().add("seat-available");
-                seatBtn.setOnAction(e -> {
-                    asientoSeleccionado = a;
-                    // reset estilos de todos los botones
-                    seatGrid.getChildren().forEach(node -> {
-                        node.getStyleClass().remove("seat-selected");
-                        if (node instanceof Button && !((Button) node).isDisabled()) {
-                            if (!node.getStyleClass().contains("seat-available")) {
-                                node.getStyleClass().add("seat-available");
-                            }
-                        }
-                    });
-                    seatBtn.getStyleClass().remove("seat-available");
-                    seatBtn.getStyleClass().add("seat-selected");
-                });
-            } else {
-                seatBtn.setDisable(true);
-                seatBtn.getStyleClass().add("seat-occupied");
+        int rowOffset = 0;
+
+        for (ClaseAsiento clase : clases) {
+            // Etiqueta de clase
+            Label claseLabel = new Label(clase.toString().replace("_", " "));
+            claseLabel.getStyleClass().add("class-label");
+            seatGrid.add(claseLabel, 0, rowOffset, columnas, 1);
+            rowOffset++;
+
+            for (int fila = 1; fila <= filasPorClase; fila++) {
+                for (int col = 0; col < columnas; col++) {
+                    char letra = letras[col];
+                    String codigo = fila + String.valueOf(letra); // ej: "1A", "2B"
+
+                    // Buscar asiento en el modelo o crear uno nuevo
+                    Asiento asiento = avion.getAsientos().stream()
+                        .filter(a -> a.getCodigo().equals(codigo) && a.getClase() == clase)
+                        .findFirst()
+                        .orElse(new Asiento(codigo, fila, letra, clase, "General"));
+
+                    Button seatBtn = new Button(codigo);
+                    seatBtn.setPrefSize(60, 60);
+
+                    // Estilo por clase
+                    switch (clase) {
+                        case PRIMERA_CLASE -> seatBtn.getStyleClass().add("seat-primera");
+                        case EJECUTIVA -> seatBtn.getStyleClass().add("seat-ejecutiva");
+                        case ECONOMICA -> seatBtn.getStyleClass().add("seat-economica");
+                    }
+
+                    if (asiento.isDisponible()) {
+                        seatBtn.setOnAction(e -> {
+                            asientoSeleccionado = asiento;
+
+                            seatGrid.getChildren().forEach(node -> {
+                                if (node instanceof Button) {
+                                    node.getStyleClass().remove("seat-selected");
+                                }
+                            });
+
+                            seatBtn.getStyleClass().add("seat-selected");
+                        });
+                    } else {
+                        seatBtn.setDisable(true);
+                        seatBtn.getStyleClass().add("seat-occupied");
+                    }
+
+                    seatGrid.add(seatBtn, col, rowOffset + fila - 1);
+                }
             }
 
-            // Añadimos el botón al GridPane
-            seatGrid.add(seatBtn, col, row);
-
-            col++;
-            if (col == 6) { // ejemplo: 6 columnas (A-F)
-                col = 0;
-                row++;
-            }
+            rowOffset += filasPorClase;
         }
     }
 
