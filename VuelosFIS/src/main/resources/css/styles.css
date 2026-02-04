@@ -269,3 +269,48 @@
     -fx-text-fill: white;
     -fx-font-weight: bold;
 }
+
+/* Nuevos estilos para la factura */
+
+.label-bold {
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-primary-color;
+    -fx-font-size: 14px;
+}
+
+.label-value {
+    -fx-font-size: 14px;
+    -fx-text-fill: #555555;
+}
+
+/* Área de servicios más limpia */
+.invoice-text-area {
+    -fx-background-color: #f8f9fa;
+    -fx-background-insets: 0;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 5;
+    -fx-font-size: 12px;
+}
+
+.invoice-text-area .content {
+    -fx-background-color: #f8f9fa;
+}
+
+/* Estilo para el Total */
+.label-total-title {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-primary-color;
+}
+
+.label-total-value {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: -fx-secondary-color; /* Usamos tu azul brillante */
+}
+
+/* Separadores */
+.separator .line {
+    -fx-border-color: #bdc3c7;
+    -fx-border-width: 0.5;
+}
