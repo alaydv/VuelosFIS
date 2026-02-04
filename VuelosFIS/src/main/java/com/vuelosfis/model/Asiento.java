@@ -6,6 +6,23 @@ public class Asiento {
     private char letra;
     private ClaseAsiento clase;
     private String ubicacion;
+
+    public int getFila() {
+        return fila;
+    }
+
+    public char getLetra() {
+        return letra;
+    }
+
+    public ClaseAsiento getClase() {
+        return clase;
+    }
+
+    public String getUbicacion() {
+        return ubicacion;
+    }
+
     private boolean disponible;
 
     public Asiento(String codigo, ClaseAsiento clase) {

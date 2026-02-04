@@ -10,6 +10,14 @@ public class Itinerario {
     private List<Vuelo> vuelos;
     private Date fechaGeneracion;
 
+    public String getCodigoItinerario() {
+        return codigoItinerario;
+    }
+
+    public Date getFechaGeneracion() {
+        return fechaGeneracion;
+    }
+
     public Itinerario(String codigoItinerario) {
         this.codigoItinerario = codigoItinerario;
         this.vuelos = new ArrayList<>();

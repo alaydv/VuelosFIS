@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+
+<VBox alignment="CENTER" spacing="30.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.vuelosfis.view.javafx.WelcomeController" styleClass="root">
+    <padding>
+        <Insets bottom="50.0" left="50.0" right="50.0" top="50.0" />
+    </padding>
+
+    <Label text="VuelosFIS" styleClass="header-label" />
+    
+    <Label text="Bienvenido a tu sistema de gestión de vuelos favorito" styleClass="subheader-label" />
+
+    <HBox alignment="CENTER" spacing="20.0">
+        <VBox alignment="CENTER" styleClass="card" spacing="15.0" minWidth="250" minHeight="200">
+             <Label text="Administración" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+             <Label text="Gestiona vuelos y reportes" wrapText="true" textAlignment="CENTER"/>
+             <Button text="Ingresar como Admin" onAction="#handleAdminLogin" styleClass="secondary-button" />
+        </VBox>
+
+        <VBox alignment="CENTER" styleClass="card" spacing="15.0" minWidth="250" minHeight="200">
+             <Label text="Pasajeros" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+             <Label text="Reserva tu próximo destino" wrapText="true" textAlignment="CENTER"/>
+             <Button text="Buscar Vuelos" onAction="#handleUserEnter" styleClass="button" />
+        </VBox>
+    </HBox>
+    
+</VBox>

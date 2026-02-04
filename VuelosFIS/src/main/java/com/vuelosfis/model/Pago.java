@@ -8,6 +8,23 @@ public class Pago {
     private double monto;
     private LocalDateTime fecha;
     private String estado;
+
+    public double getMonto() {
+        return monto;
+    }
+
+    public LocalDateTime getFecha() {
+        return fecha;
+    }
+
+    public String getIdPago() {
+        return idPago;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
     private IPaymentStrategy estrategia;
 
     public Pago(double monto, IPaymentStrategy estrategia) {

@@ -3,10 +3,8 @@ package com.vuelosfis.controller;
 import com.vuelosfis.exception.*;
 import com.vuelosfis.model.*;
 import com.vuelosfis.util.DataLoader;
-import com.vuelosfis.view.ConsoleView;
 import java.util.List;
 import java.util.Map;
-import com.vuelosfis.view.AdministradorVentanaView;
 
 public class SistemaController {
 
@@ -14,107 +12,93 @@ public class SistemaController {
     private Map<String, Aeropuerto> aeropuertos;
     private Map<String, Avion> aviones;
     private List<Cliente> clientes;
-    private ConsoleView view;
     private DataLoader dataLoader;
+    // New: Track all reservations for Admin view
+    private java.util.List<Reserva> allReservas;
 
-    public SistemaController(ConsoleView view) {
-        this.view = view;
+    public SistemaController() {
         this.dataLoader = new DataLoader();
+        this.allReservas = new java.util.ArrayList<>();
         cargarDatos();
     }
 
     private void cargarDatos() {
         try {
-            String pathPrefix = "src/main/resources/";
+            System.out.println("Iniciando carga de datos. Directorio de trabajo: " + System.getProperty("user.dir"));
+
+            String[] possiblePaths = {
+                    "src/main/resources/",
+                    "VuelosFIS/src/main/resources/",
+                    "../src/main/resources/",
+                    "./"
+            };
+
+            String pathPrefix = null;
+            for (String path : possiblePaths) {
+                java.io.File testFile = new java.io.File(path + "aeropuertos.txt");
+                if (testFile.exists()) {
+                    pathPrefix = path;
+                    System.out.println("Datos encontrados en: " + testFile.getAbsolutePath());
+                    break;
+                }
+            }
+
+            if (pathPrefix == null) {
+                System.err.println("ADVERTENCIA: No se encontraron los archivos de datos en las rutas esperadas.");
+                // Try minimal fallback or crash gracefully
+                throw new java.io.FileNotFoundException("aeropuertos.txt no encontrado en ninguna ruta probable.");
+            }
+
             aeropuertos = dataLoader.cargarAeropuertosMap(pathPrefix + "aeropuertos.txt");
             aviones = dataLoader.cargarAvionesMap(pathPrefix + "aviones.txt");
             clientes = dataLoader.cargarClientes(pathPrefix + "clientes.txt");
             vuelos = dataLoader.cargarVuelos(pathPrefix + "vuelos.txt", aeropuertos, aviones);
 
-            view.mostrarMensaje("Datos cargados correctamente: " + vuelos.size() + " vuelos.");
-        } catch (CargaDatosException e) {
-            view.mostrarError("Error crítico al cargar datos: " + e.getMessage());
+            System.out.println("Carga de datos exitosa. Vuelos cargados: " + (vuelos != null ? vuelos.size() : 0));
+
+        } catch (Exception e) {
+            System.err.println("Error crítico al cargar datos: " + e.getMessage());
+            e.printStackTrace();
+            // Initialize empty lists to prevent crashes
+            if (vuelos == null)
+                vuelos = new java.util.ArrayList<>();
+            if (clientes == null)
+                clientes = new java.util.ArrayList<>();
+            if (aeropuertos == null)
+                aeropuertos = new java.util.HashMap<>();
+            if (aviones == null)
+                aviones = new java.util.HashMap<>();
         }
     }
 
-    public void iniciar() {
-        boolean salir = false;
-        while (!salir) {
-            view.mostrarMenu();
-            int opcion = view.leerOpcion();
-            switch (opcion) {
-                case 1:
-                    verVuelos();
-                    break;
-                case 2:
-                    realizarReserva();
-                    break;
-                case 3:
-                    salir = true;
-                    view.mostrarMensaje("Saliendo del sistema...");
-                    break;
-                default:
-                    view.mostrarError("Opción inválida, intente de nuevo.");
-            }
-        }
-    }
-
-    private void verVuelos() {
-        view.mostrarVuelos(vuelos);
-    }
-
-    private void realizarReserva() {
-        verVuelos();
-        if (vuelos == null || vuelos.isEmpty()) {
-            return;
-        }
-
-        int indice = view.solicitarIndiceVuelo();
-        if (indice < 1 || indice > vuelos.size()) {
-            view.mostrarError("Vuelo inválido.");
-            return;
-        }
-        Vuelo vueloSeleccionado = vuelos.get(indice - 1);
-
-        String idCliente = view.solicitarClienteId();
-        Cliente cliente = buscarCliente(idCliente);
-        if (cliente == null) {
-            view.mostrarMensaje("Cliente no encontrado (Use IDs: 1001, 1002...). Creando reserva como invitado.");
-            cliente = new Cliente(idCliente, "Invitado", "invitado@email.com");
+    public Reserva crearReserva(Vuelo vuelo, Cliente cliente, Pasajero pasajero, Asiento asiento) throws Exception {
+        if (vuelo == null || cliente == null || pasajero == null || asiento == null) {
+            throw new IllegalArgumentException("Datos de reserva incompletos.");
         }
 
         Reserva reserva = new Reserva(cliente);
+        Pasaje pasaje = new Pasaje(pasajero, vuelo);
 
-        String nombrePax = view.solicitarNombrePasajero();
-        String pasaportePax = view.solicitarPasaportePasajero();
-        Pasajero pasajero = new Pasajero(nombrePax, pasaportePax);
+        // Verifica disponibilidad del asiento (implementar lógica si es necesario en
+        // Vuelo/Avion)
+        pasaje.seleccionarAsiento(asiento);
+        reserva.agregarPasaje(pasaje);
 
-        Pasaje pasaje = new Pasaje(pasajero, vueloSeleccionado);
-
-        try {
-            Asiento asiento = new Asiento("99F", ClaseAsiento.ECONOMICA);
-            pasaje.seleccionarAsiento(asiento);
-            reserva.agregarPasaje(pasaje);
-
-            view.mostrarMensaje("Reserva creada. Total a pagar: " + pasaje.calcularPrecioTotal());
-
-            IPaymentStrategy pago = new PagoTarjetaCredito("1234567890123456", cliente.getNombre(), "12/25", "123");
-
-            reserva.confirmarReserva(pago);
-
-            view.mostrarMensaje("Reserva CONFIRMADA y PAGADA.");
-            view.mostrarMensaje(reserva.getResumen());
-            view.mostrarMensaje(pasaje.generarBoardingPass());
-
-        } catch (SaldoInsuficienteException e) {
-            view.mostrarError("La reserva no pudo ser pagada: " + e.getMessage());
-            reserva.cancelar();
-        } catch (Exception e) {
-            view.mostrarError("Error inesperado al procesar la reserva: " + e.getMessage());
-        }
+        return reserva;
     }
 
-    private Cliente buscarCliente(String id) {
+    public void pagarReserva(Reserva reserva, IPaymentStrategy estrategiaPago)
+            throws SaldoInsuficienteException {
+        reserva.confirmarReserva(estrategiaPago);
+        // Track completed reservation
+        allReservas.add(reserva);
+    }
+
+    public List<Reserva> getTodasLasReservas() {
+        return allReservas;
+    }
+
+    public Cliente buscarCliente(String id) {
         if (clientes == null) {
             return null;
         }
@@ -126,21 +110,13 @@ public class SistemaController {
         return null;
     }
 
-    // Agrega estos métodos a tu clase SistemaController
-    public void abrirModuloUsuario() {
-        // Por ahora, como no tienes otra ventana, mostraremos los vuelos en consola
-        // Pero aquí es donde llamarías a: new VentanaReserva(this).setVisible(true);
-        System.out.println("--- Abriendo Interfaz de Usuario ---");
-        verVuelos();
+    public Cliente registrarClienteInvitado(String id, String nombre, String email) {
+        Cliente nuevo = new Cliente(id, nombre, email);
+        // Opcional: agregarlo a la lista de clientes si queremos persistencia en
+        // memoria
+        return nuevo;
     }
 
-    public void abrirModuloAdmin() {
-        // Creamos la instancia de la ventana del administrador pasando "this" (el controlador)
-        AdministradorVentanaView adminView = new AdministradorVentanaView(this);
-        adminView.setVisible(true);
-    }
-
-// Getters para que las futuras ventanas puedan obtener la información
     public List<Vuelo> getVuelos() {
         return vuelos;
     }

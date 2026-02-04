@@ -54,4 +54,20 @@ public class Pasaje {
     public String getNumeroTicket() {
         return numeroTicket;
     }
+
+    public Vuelo getVuelo() {
+        return vuelo;
+    }
+
+    public Asiento getAsiento() {
+        return asiento;
+    }
+
+    public double getPrecioBase() {
+        return precioBase;
+    }
+
+    public String getCodigoQR() {
+        return codigoQR;
+    }
 }

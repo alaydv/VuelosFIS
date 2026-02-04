@@ -39,4 +39,20 @@ public class Pasajero {
     public String getPasaporte() {
         return pasaporte;
     }
+
+    public String getNroDocumento() {
+        return nroDocumento;
+    }
+
+    public String getNacionalidad() {
+        return nacionalidad;
+    }
+
+    public String getNecesidadesEspeciales() {
+        return necesidadesEspeciales;
+    }
+
+    public Date getFechaNacimiento() {
+        return fechaNacimiento;
+    }
 }

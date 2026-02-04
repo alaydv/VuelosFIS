@@ -43,4 +43,20 @@ public class Avion {
     public String getMatricula() {
         return matricula;
     }
+
+    public String getModelo() {
+        return modelo;
+    }
+
+    public String getFabricante() {
+        return fabricante;
+    }
+
+    public int getAnioFabricacion() {
+        return anioFabricacion;
+    }
+
+    public int getCapacidadTotal() {
+        return capacidadTotal;
+    }
 }

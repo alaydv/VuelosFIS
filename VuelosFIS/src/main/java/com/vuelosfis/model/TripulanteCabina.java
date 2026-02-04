@@ -24,4 +24,12 @@ public class TripulanteCabina extends Tripulacion {
     public void realizarDemostracionSeguridad() {
         System.out.println("Tripulante " + nombre + " realizando demostración de seguridad.");
     }
+
+    public List<String> getIdiomas() {
+        return idiomas;
+    }
+
+    public List<String> getCertificaciones() {
+        return certificaciones;
+    }
 }

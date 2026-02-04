@@ -11,9 +11,32 @@ public class Vuelo {
     private LocalDateTime fechaLlegada;
     private Aeropuerto origen;
     private Aeropuerto destino;
+
+    public LocalDateTime getFechaHoraSalida() {
+        return fechaSalida;
+    }
+
+    public LocalDateTime getFechaHoraLlegada() {
+        return fechaLlegada;
+    }
+
     private Avion avion;
+
     private EstadoVuelo estado;
+
+    public EstadoVuelo getEstado() {
+        return estado;
+    }
+
+    public Avion getAvion() {
+        return avion;
+    }
+
     private List<Tripulacion> tripulacion;
+
+    public List<Tripulacion> getTripulacion() {
+        return tripulacion;
+    }
 
     public Vuelo(String numero, Aeropuerto origen, Aeropuerto destino) {
         this.numeroVuelo = numero;

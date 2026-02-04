@@ -10,10 +10,22 @@ public class LifeMiles {
     private Date fechaVencimiento;
 
     public LifeMiles(String numeroCuenta) {
+        this(numeroCuenta, 0);
+    }
+
+    public LifeMiles(String numeroCuenta, int saldoInicial) {
         this.numeroCuenta = numeroCuenta;
-        this.saldoMillas = 0;
+        this.saldoMillas = saldoInicial;
         this.nivelStatus = "Básico";
         this.fechaVencimiento = new Date();
+    }
+
+    public String getNumeroCuenta() {
+        return numeroCuenta;
+    }
+
+    public Date getFechaVencimiento() {
+        return fechaVencimiento;
     }
 
     public void acumularMillas(int cantidad) {

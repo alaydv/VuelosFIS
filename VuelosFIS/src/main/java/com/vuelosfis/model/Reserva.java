@@ -13,7 +13,12 @@ public class Reserva {
     private List<Pasaje> pasajes;
     private double total;
     private INotificationService notificador;
+
     private Pago pago;
+
+    public Pago getPago() {
+        return pago;
+    }
 
     public Reserva(Cliente cliente) {
         this.cliente = cliente;
@@ -53,5 +58,21 @@ public class Reserva {
     public String getResumen() {
         return "Reserva: " + codigoReserva + ", Cliente: " + cliente.getNombre() + ", Total: " + total + ", Estado: "
                 + estado;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public List<Pasaje> getPasajes() {
+        return pasajes;
+    }
+
+    public LocalDateTime getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public EstadoReserva getEstado() {
+        return estado;
     }
 }

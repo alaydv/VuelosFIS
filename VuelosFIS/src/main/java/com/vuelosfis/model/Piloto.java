@@ -26,4 +26,16 @@ public class Piloto extends Tripulacion {
     public void reportarIncidente() {
         System.out.println("Piloto " + nombre + " reportando incidente.");
     }
+
+    public String getNroLicencia() {
+        return nroLicencia;
+    }
+
+    public int getHorasVueloAcumuladas() {
+        return horasVueloAcumuladas;
+    }
+
+    public String getRango() {
+        return rango;
+    }
 }

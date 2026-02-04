@@ -6,7 +6,20 @@ public class PagoTarjetaCredito implements IPaymentStrategy {
     private String numeroTarjeta;
     private String nombreTitular;
     private String fechaExpiracion;
+
+    public String getNombreTitular() {
+        return nombreTitular;
+    }
+
+    public String getFechaExpiracion() {
+        return fechaExpiracion;
+    }
+
     private String cvv;
+
+    public String getCvv() {
+        return cvv;
+    }
 
     public PagoTarjetaCredito(String numeroTarjeta, String nombreTitular, String fechaExpiracion, String cvv) {
         this.numeroTarjeta = numeroTarjeta;

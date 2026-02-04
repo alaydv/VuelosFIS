@@ -30,6 +30,22 @@ public class Aeropuerto {
         return codigoIATA;
     }
 
+    public String getCiudad() {
+        return ciudad;
+    }
+
+    public String getPais() {
+        return pais;
+    }
+
+    public double getLatitud() {
+        return latitud;
+    }
+
+    public double getLongitud() {
+        return longitud;
+    }
+
     public String getNombre() {
         return nombre;
     }

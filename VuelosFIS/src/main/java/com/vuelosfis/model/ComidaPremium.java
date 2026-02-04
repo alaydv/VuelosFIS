@@ -4,6 +4,14 @@ public class ComidaPremium extends ServicioAdicional {
     private String menu;
     private boolean esVegetariano;
 
+    public String getMenu() {
+        return menu;
+    }
+
+    public boolean isVegetariano() {
+        return esVegetariano;
+    }
+
     public ComidaPremium(String menu, boolean esVegetariano) {
         super(25.0, "Comida Premium: " + menu);
         this.menu = menu;
