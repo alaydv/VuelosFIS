@@ -1,4 +1,3 @@
-
 package com.vuelosfis.view;
 
 import java.awt.BorderLayout;
@@ -8,14 +7,20 @@ import java.awt.BorderLayout;
  * @author Usuario
  */
 public class AdministradorVentanaView extends javax.swing.JFrame {
-    
+
+    private com.vuelosfis.controller.SistemaController controller;
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(AdministradorVentanaView.class.getName());
 
+    
+    
     /**
      * Creates new form AdministradorVentanaView
      */
-    public AdministradorVentanaView() {
+    public AdministradorVentanaView(com.vuelosfis.controller.SistemaController controller) {
+        this.controller = controller;
         initComponents();
+        this.setLocationRelativeTo(null); // Centrar ventana
+        this.setTitle("VuelosFIS - Panel de Administración");
     }
 
     /**
@@ -36,7 +41,15 @@ public class AdministradorVentanaView extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
+        jPanel1.setBackground(new java.awt.Color(124, 201, 210));
+
+        verVueloBtn.setBackground(new java.awt.Color(119, 144, 225));
+        verVueloBtn.setFont(new java.awt.Font("Segoe UI Semibold", 0, 36)); // NOI18N
+        verVueloBtn.setForeground(new java.awt.Color(51, 51, 51));
         verVueloBtn.setText("Ver Vuelos");
+        verVueloBtn.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 51), 3, true));
+        verVueloBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        verVueloBtn.setFocusPainted(false);
         verVueloBtn.setPreferredSize(new java.awt.Dimension(500, 150));
         verVueloBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -44,8 +57,14 @@ public class AdministradorVentanaView extends javax.swing.JFrame {
             }
         });
 
+        cargarVueloBtn.setBackground(new java.awt.Color(119, 144, 225));
+        cargarVueloBtn.setFont(new java.awt.Font("Segoe UI Semibold", 0, 36)); // NOI18N
+        cargarVueloBtn.setForeground(new java.awt.Color(51, 51, 51));
         cargarVueloBtn.setText("Cargar CSV de Vuelos");
         cargarVueloBtn.setToolTipText("");
+        cargarVueloBtn.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 51), 3, true));
+        cargarVueloBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        cargarVueloBtn.setFocusPainted(false);
         cargarVueloBtn.setPreferredSize(new java.awt.Dimension(500, 150));
         cargarVueloBtn.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseDragged(java.awt.event.MouseEvent evt) {
@@ -58,10 +77,22 @@ public class AdministradorVentanaView extends javax.swing.JFrame {
             }
         });
 
+        cerrarBtn.setBackground(new java.awt.Color(255, 51, 51));
+        cerrarBtn.setFont(new java.awt.Font("Segoe UI Semibold", 0, 36)); // NOI18N
+        cerrarBtn.setForeground(new java.awt.Color(204, 204, 204));
         cerrarBtn.setText("Cerrar Sesión");
+        cerrarBtn.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(204, 0, 0), 3, true));
+        cerrarBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        cerrarBtn.setFocusPainted(false);
         cerrarBtn.setPreferredSize(new java.awt.Dimension(500, 150));
 
+        actualizarDatosBtn.setBackground(new java.awt.Color(119, 144, 225));
+        actualizarDatosBtn.setFont(new java.awt.Font("Segoe UI Semibold", 0, 36)); // NOI18N
+        actualizarDatosBtn.setForeground(new java.awt.Color(51, 51, 51));
         actualizarDatosBtn.setText("Actualizar Datos");
+        actualizarDatosBtn.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 51), 3, true));
+        actualizarDatosBtn.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        actualizarDatosBtn.setFocusPainted(false);
         actualizarDatosBtn.setPreferredSize(new java.awt.Dimension(500, 150));
         actualizarDatosBtn.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -129,14 +160,13 @@ public class AdministradorVentanaView extends javax.swing.JFrame {
     private void cargarVueloBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cargarVueloBtnActionPerformed
         // TODO add your handling code here:
         Panel1 p1 = new Panel1();
-        p1.setSize(1145,700);
-        p1.setLocation(0,0);
-        
+        p1.setSize(1145, 700);
+        p1.setLocation(0, 0);
+
         content.removeAll();
         content.add(p1, BorderLayout.CENTER);
         content.revalidate();
         content.repaint();
-        
     }//GEN-LAST:event_cargarVueloBtnActionPerformed
 
     private void cargarVueloBtnMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cargarVueloBtnMouseDragged
@@ -146,9 +176,9 @@ public class AdministradorVentanaView extends javax.swing.JFrame {
     private void verVueloBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_verVueloBtnActionPerformed
         // TODO add your handling code here:
         Panel2 p2 = new Panel2();
-        p2.setSize(1145,700);
-        p2.setLocation(0,0);
-        
+        p2.setSize(1145, 700);
+        p2.setLocation(0, 0);
+
         content.removeAll();
         content.add(p2, BorderLayout.CENTER);
         content.revalidate();
@@ -158,39 +188,15 @@ public class AdministradorVentanaView extends javax.swing.JFrame {
     private void actualizarDatosBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_actualizarDatosBtnActionPerformed
         // TODO add your handling code here:
         Panel3 p3 = new Panel3();
-        p3.setSize(1145,700);
-        p3.setLocation(0,0);
-        
+        p3.setSize(1145, 700);
+        p3.setLocation(0, 0);
+
         content.removeAll();
         content.add(p3, BorderLayout.CENTER);
         content.revalidate();
         content.repaint();
     }//GEN-LAST:event_actualizarDatosBtnActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new AdministradorVentanaView().setVisible(true));
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton actualizarDatosBtn;

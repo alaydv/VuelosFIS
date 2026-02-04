@@ -6,8 +6,10 @@ import com.vuelosfis.util.DataLoader;
 import com.vuelosfis.view.ConsoleView;
 import java.util.List;
 import java.util.Map;
+import com.vuelosfis.view.AdministradorVentanaView;
 
 public class SistemaController {
+
     private List<Vuelo> vuelos;
     private Map<String, Aeropuerto> aeropuertos;
     private Map<String, Avion> aviones;
@@ -63,8 +65,9 @@ public class SistemaController {
 
     private void realizarReserva() {
         verVuelos();
-        if (vuelos == null || vuelos.isEmpty())
+        if (vuelos == null || vuelos.isEmpty()) {
             return;
+        }
 
         int indice = view.solicitarIndiceVuelo();
         if (indice < 1 || indice > vuelos.size()) {
@@ -112,12 +115,37 @@ public class SistemaController {
     }
 
     private Cliente buscarCliente(String id) {
-        if (clientes == null)
+        if (clientes == null) {
             return null;
+        }
         for (Cliente c : clientes) {
-            if (c.getIdCliente().equals(id))
+            if (c.getIdCliente().equals(id)) {
                 return c;
+            }
         }
         return null;
+    }
+
+    // Agrega estos métodos a tu clase SistemaController
+    public void abrirModuloUsuario() {
+        // Por ahora, como no tienes otra ventana, mostraremos los vuelos en consola
+        // Pero aquí es donde llamarías a: new VentanaReserva(this).setVisible(true);
+        System.out.println("--- Abriendo Interfaz de Usuario ---");
+        verVuelos();
+    }
+
+    public void abrirModuloAdmin() {
+        // Creamos la instancia de la ventana del administrador pasando "this" (el controlador)
+        AdministradorVentanaView adminView = new AdministradorVentanaView(this);
+        adminView.setVisible(true);
+    }
+
+// Getters para que las futuras ventanas puedan obtener la información
+    public List<Vuelo> getVuelos() {
+        return vuelos;
+    }
+
+    public List<Cliente> getClientes() {
+        return clientes;
     }
 }
