@@ -14,4 +14,9 @@ public abstract class ServicioAdicional {
     public String getDescripcion() {
         return descripcion;
     }
+    
+    public double getCosto() {
+    return costo;
+    }
+
 }
