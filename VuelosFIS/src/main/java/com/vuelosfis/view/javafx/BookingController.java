@@ -74,6 +74,13 @@ public class BookingController {
 
     private Vuelo selectedFlight;
     private SistemaController sistemaController;
+    
+    //Asiento escogido
+    private Asiento asientoSeleccionado;
+
+    public void setAsiento(Asiento asiento) {
+    this.asientoSeleccionado = asiento;
+    }
 
     private void updatePaymentVisibility() {
         cardDetailsBox.setVisible(payCard.isSelected());
@@ -172,6 +179,28 @@ public class BookingController {
 
     @FXML
     private void handleConfirm(ActionEvent event) {
+        
+        try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Invoice.fxml"));
+        Parent root = loader.load();
+
+        // Si quieres pasar datos, puedes usar:
+        // InvoiceController controller = loader.getController();
+        // controller.setFactura(factura); // si tienes una factura lista
+
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
+
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.setScene(scene);
+        stage.setTitle("Factura de Reserva");
+        stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            messageLabel.setText("Error al cargar la vista de factura.");
+        }
+
         messageLabel.setText("");
         messageLabel.setStyle("-fx-text-fill: red;");
 
@@ -200,7 +229,11 @@ public class BookingController {
             Pasajero pasajero = new Pasajero(paxName, passport);
 
             // Asiento: For simplicity assign a default one or random
-            Asiento asiento = new Asiento("A1", ClaseAsiento.ECONOMICA);
+            Asiento asiento = asientoSeleccionado;
+            if (asiento == null) {
+            messageLabel.setText("No se ha seleccionado un asiento.");
+            return;
+            }
 
             // 3. Create Basic Reservation
             Reserva reserva = sistemaController.crearReserva(selectedFlight, cliente, pasajero, asiento);
