@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import com.vuelosfis.view.javafx.InvoiceController;
 
 import java.io.IOException;
 
@@ -180,26 +181,7 @@ public class BookingController {
     @FXML
     private void handleConfirm(ActionEvent event) {
         
-        try {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Invoice.fxml"));
-        Parent root = loader.load();
-
-        // Si quieres pasar datos, puedes usar:
-        // InvoiceController controller = loader.getController();
-        // controller.setFactura(factura); // si tienes una factura lista
-
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
-
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(scene);
-        stage.setTitle("Factura de Reserva");
-        stage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            messageLabel.setText("Error al cargar la vista de factura.");
-        }
+        
 
         messageLabel.setText("");
         messageLabel.setStyle("-fx-text-fill: red;");
@@ -295,9 +277,25 @@ public class BookingController {
 
             // 6. Execute Payment
             if (strategy == null) {
-                throw new IllegalStateException("Debe seleccionar un método de pago");
+            throw new IllegalStateException("Debe seleccionar un método de pago");
             }
+            
             sistemaController.pagarReserva(reserva, strategy);
+            
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/Invoice.fxml"));
+            Parent root = loader.load();
+
+            InvoiceController invoiceController = loader.getController();
+
+            invoiceController.setReserva(reserva);
+
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(getClass().getResource("/css/styles.css").toExternalForm());
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(scene);
+            stage.setTitle("Factura de Reserva");
+            stage.show();
 
             // 7. Use Itinerario Class (Robustness)
             Itinerario itinerario = new Itinerario("IT-" + System.currentTimeMillis());

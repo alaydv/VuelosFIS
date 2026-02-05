@@ -1,6 +1,8 @@
 package com.vuelosfis.view.javafx;
 
-import com.vuelosfis.model.Factura;
+import com.vuelosfis.model.Reserva;
+import com.vuelosfis.model.Pasaje;
+import com.vuelosfis.model.Vuelo;
 import com.vuelosfis.model.ServicioAdicional;
 import java.io.IOException;
 import javafx.event.ActionEvent;
@@ -40,24 +42,42 @@ public class InvoiceController {
     @FXML
     private Button finalizarButton;
 
-    public void setFactura(Factura factura) {
-        pasajeroLabel.setText(factura.getNombrePasajero());
-        documentoLabel.setText(factura.getDocumentoPasajero());
-        vueloLabel.setText(factura.getNumeroVuelo());
-        rutaLabel.setText(factura.getOrigen() + " → " + factura.getDestino());
-        fechaVueloLabel.setText(factura.getFechaVuelo().toString());
-        asientoLabel.setText(factura.getAsiento());
-        metodoPagoLabel.setText(factura.getMetodoPago());
-        totalLabel.setText("$" + String.format("%.2f", factura.getTotal()));
-        fechaEmisionLabel.setText(factura.getFechaEmision().toString());
+    public void setReserva(Reserva reserva) {
 
-        StringBuilder servicios = new StringBuilder();
-        for (ServicioAdicional s : factura.getServiciosAdicionales()) {
-            servicios.append("- ").append(s.getDescripcion())
-                     .append(" ($").append(String.format("%.2f", s.getCosto())).append(")\n");
-        }
-        serviciosTextArea.setText(servicios.toString());
+    Pasaje p = reserva.getPasajes().get(0);
+    Vuelo v = p.getVuelo();
+    double total = p.calcularPrecioTotal();
+    pasajeroLabel.setText(p.getPasajero().getNombre());
+    documentoLabel.setText(p.getPasajero().getNroDocumento());
+
+    vueloLabel.setText(v.getNumeroVuelo());
+    rutaLabel.setText(
+        v.getOrigen().getCodigoIATA() + " → " +
+        v.getDestino().getCodigoIATA()
+    );
+
+    fechaVueloLabel.setText(v.getFechaHoraSalida().toString());
+    asientoLabel.setText(p.getAsiento().getCodigo());
+
+    metodoPagoLabel.setText(reserva.getPago().getEstado());
+    totalLabel.setText("$" + String.format("%.2f", total));
+    fechaEmisionLabel.setText(java.time.LocalDate.now().toString());
+
+    StringBuilder servicios = new StringBuilder();
+    for (ServicioAdicional s : p.getServiciosAdicionales()) {
+        servicios.append("- ")
+                 .append(s.getDescripcion())
+                 .append(" ($")
+                 .append(String.format("%.2f", s.getCosto()))
+                 .append(")\n");
     }
+
+    serviciosTextArea.setText(
+        servicios.length() == 0 ? "Sin servicios adicionales" : servicios.toString()
+    );
+}
+
+
 
     @FXML
     private void initialize() {

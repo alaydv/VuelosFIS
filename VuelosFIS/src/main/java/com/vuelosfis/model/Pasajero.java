@@ -10,9 +10,9 @@ public class Pasajero {
     private String nacionalidad;
     private String necesidadesEspeciales;
 
-    public Pasajero(String nombre, String pasaporte) {
+    public Pasajero(String nombre, String nroDocumento) {
         this.nombre = nombre;
-        this.pasaporte = pasaporte;
+        this.nroDocumento = nroDocumento;
     }
 
     public Pasajero(String nombre, String pasaporte, String documento, Date nacimiento) {

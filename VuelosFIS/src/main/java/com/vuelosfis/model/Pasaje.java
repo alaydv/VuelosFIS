@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Pasaje {
+
     private String numeroTicket;
     private String codigoQR;
     private Pasajero pasajero;
@@ -17,7 +18,7 @@ public class Pasaje {
         this.pasajero = pasajero;
         this.vuelo = vuelo;
         this.serviciosAdicionales = new ArrayList<>();
-        this.precioBase = 100.0;
+        this.precioBase = 200.0;
         this.emitido = false;
         this.numeroTicket = "TKT-" + System.currentTimeMillis();
     }
@@ -43,8 +44,8 @@ public class Pasaje {
         if (!emitido)
             return "Pasaje no emitido.";
         return "BOARDING PASS:\nPassenger: " + pasajero.getNombre() +
-                "\nFlight: " + vuelo.getNumeroVuelo() +
-                "\nSeat: " + (asiento != null ? asiento.getCodigo() : "Assigned at Gate");
+               "\nFlight: " + vuelo.getNumeroVuelo() +
+               "\nSeat: " + (asiento != null ? asiento.getCodigo() : "Assigned at Gate");
     }
 
     public void setEmitido(boolean emitido) {
@@ -69,5 +70,14 @@ public class Pasaje {
 
     public String getCodigoQR() {
         return codigoQR;
+    }
+
+    
+    public Pasajero getPasajero() {
+        return pasajero;
+    }
+
+    public List<ServicioAdicional> getServiciosAdicionales() {
+        return serviciosAdicionales;
     }
 }
